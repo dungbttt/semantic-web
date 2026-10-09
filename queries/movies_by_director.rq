@@ -1,0 +1,9 @@
+PREFIX cine: <https://example.org/cinegraph/ontology#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?title ?year WHERE {
+  ?movie a cine:Movie ; cine:title ?title ; cine:directedBy ?director .
+  OPTIONAL { ?movie cine:releaseYear ?year }
+  ?director rdfs:label "Christopher Nolan"@en .
+}
+ORDER BY ?year

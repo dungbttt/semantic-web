@@ -1,0 +1,42 @@
+@prefix cine: <https://example.org/cinegraph/ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+cine: a owl:Ontology ;
+    rdfs:label "CineGraph movie ontology"@en ;
+    rdfs:comment "A provenance-aware movie knowledge graph aligned with Schema.org."@en .
+
+cine:Movie a owl:Class ; rdfs:subClassOf schema:Movie ; rdfs:label "Movie"@en .
+cine:Person a owl:Class ; rdfs:subClassOf schema:Person ; rdfs:label "Person"@en .
+cine:Actor a owl:Class ; rdfs:subClassOf cine:Person ; rdfs:label "Actor"@en .
+cine:Director a owl:Class ; rdfs:subClassOf cine:Person ; rdfs:label "Director"@en .
+cine:Genre a owl:Class ; rdfs:label "Genre"@en .
+cine:ExternalRating a owl:Class ; rdfs:label "External rating"@en .
+cine:FieldProvenance a owl:Class ; rdfs:label "Field provenance"@en .
+
+cine:title a owl:DatatypeProperty ; rdfs:domain cine:Movie ; rdfs:range rdf:langString ; rdfs:label "title"@en .
+cine:releaseYear a owl:DatatypeProperty ; rdfs:domain cine:Movie ; rdfs:range xsd:gYear ; rdfs:label "release year"@en .
+cine:durationMinutes a owl:DatatypeProperty ; rdfs:domain cine:Movie ; rdfs:range xsd:decimal ; rdfs:label "runtime in minutes"@en .
+cine:description a owl:DatatypeProperty ; rdfs:domain cine:Movie ; rdfs:range rdf:langString ; rdfs:label "plot summary"@en .
+cine:imdbID a owl:DatatypeProperty ; rdfs:domain cine:Movie ; rdfs:range xsd:string ; rdfs:label "IMDb identifier"@en .
+cine:tmdbID a owl:DatatypeProperty ; rdfs:domain cine:Movie ; rdfs:range xsd:string ; rdfs:label "TMDB identifier"@en .
+cine:tmdbPersonID a owl:DatatypeProperty ; rdfs:domain cine:Person ; rdfs:range xsd:string ; rdfs:label "TMDB person identifier"@en .
+cine:imdbRating a owl:DatatypeProperty ; rdfs:domain cine:Movie ; rdfs:range xsd:decimal ; rdfs:label "IMDb rating"@en .
+cine:ratingVotes a owl:DatatypeProperty ; rdfs:domain cine:Movie ; rdfs:range xsd:integer ; rdfs:label "rating vote count"@en .
+cine:tmdbRating a owl:DatatypeProperty ; rdfs:domain cine:Movie ; rdfs:range xsd:decimal ; rdfs:label "TMDB rating"@en .
+cine:tmdbVotes a owl:DatatypeProperty ; rdfs:domain cine:Movie ; rdfs:range xsd:integer ; rdfs:label "TMDB vote count"@en .
+cine:revenue a owl:DatatypeProperty ; rdfs:domain cine:Movie ; rdfs:range xsd:integer ; rdfs:label "revenue"@en .
+cine:budget a owl:DatatypeProperty ; rdfs:domain cine:Movie ; rdfs:range xsd:integer ; rdfs:label "production budget"@en .
+cine:awardsSummary a owl:DatatypeProperty ; rdfs:domain cine:Movie ; rdfs:range xsd:string ; rdfs:label "awards summary"@en .
+cine:ratingSource a owl:DatatypeProperty ; rdfs:domain cine:ExternalRating ; rdfs:range xsd:string .
+cine:ratingValue a owl:DatatypeProperty ; rdfs:domain cine:ExternalRating ; rdfs:range xsd:string .
+cine:fieldName a owl:DatatypeProperty ; rdfs:domain cine:FieldProvenance ; rdfs:range xsd:string .
+
+cine:directedBy a owl:ObjectProperty ; rdfs:domain cine:Movie ; rdfs:range cine:Director ; rdfs:label "directed by"@en .
+cine:hasActor a owl:ObjectProperty ; rdfs:domain cine:Movie ; rdfs:range cine:Actor ; rdfs:label "has actor"@en .
+cine:hasGenre a owl:ObjectProperty ; rdfs:domain cine:Movie ; rdfs:range cine:Genre ; rdfs:label "has genre"@en .
+cine:hasExternalRating a owl:ObjectProperty ; rdfs:domain cine:Movie ; rdfs:range cine:ExternalRating .
+cine:hasFieldProvenance a owl:ObjectProperty ; rdfs:domain cine:Movie ; rdfs:range cine:FieldProvenance .

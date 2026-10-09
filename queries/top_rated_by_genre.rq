@@ -1,0 +1,12 @@
+PREFIX cine: <https://example.org/cinegraph/ontology#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?genre (COUNT(DISTINCT ?movie) AS ?movieCount) (AVG(?rating) AS ?averageRating) WHERE {
+  ?movie a cine:Movie ;
+         cine:hasGenre ?genreNode ;
+         cine:imdbRating ?rating .
+  ?genreNode rdfs:label ?genre .
+}
+GROUP BY ?genre
+HAVING(COUNT(DISTINCT ?movie) >= 20)
+ORDER BY DESC(?averageRating)

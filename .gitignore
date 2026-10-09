@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+.cache/
+.ruff_cache/
+*.py[cod]
+.env
+data/raw/**
+data/cache/**
+data/processed/**
+data/rdf/**
+data/reports/**
+!data/raw/.gitkeep
+!data/cache/.gitkeep
+!data/processed/.gitkeep
+!data/rdf/.gitkeep
+!data/reports/.gitkeep

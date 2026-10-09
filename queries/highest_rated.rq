@@ -1,0 +1,7 @@
+PREFIX cine: <https://example.org/cinegraph/ontology#>
+
+SELECT ?title ?rating ?votes WHERE {
+  ?movie a cine:Movie ; cine:title ?title ; cine:imdbRating ?rating ; cine:ratingVotes ?votes .
+}
+ORDER BY DESC(?rating) DESC(?votes)
+LIMIT 20

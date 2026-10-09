@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101b2b">
+  <title>CineGraph — Semantic Movie Knowledge Graph</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='people.css') }}">
+</head>
+<body>
+  <nav class="topbar wrap">
+    <a class="brand" href="/" aria-label="CineGraph home"><span class="brand-mark">C</span><span>CineGraph</span><span class="brand-version">SEMANTIC WEB</span></a>
+    <div class="top-links"><a href="#catalog">Browse</a><a href="#ask">Ask the graph</a><a href="#neighborhood">Explore network</a></div>
+  </nav>
+
+  <main>
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <div class="overline"><span class="pulse"></span> KNOWLEDGE GRAPH FOR CINEMA</div>
+        <h1>Every movie tells a<br><em>data story.</em></h1>
+        <p class="hero-lede">Find movies, actors, and directors, then explore how they connect in the knowledge graph.</p>
+        <div class="team-members">
+          <p>Team members:</p>
+          <ul>
+            <li>Bùi Tiến Dũng</li>
+            <li>Phạm Tuấn Kiệt</li>
+            <li>Lương Minh Dương</li>
+          </ul>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div>
+        <div class="graph-line line-a"></div><div class="graph-line line-b"></div><div class="graph-line line-c"></div>
+        <div class="graph-node node-film"><span>FILM</span><strong>RDF</strong></div>
+        <div class="graph-node node-person"><span>PERSON</span><strong>↗</strong></div>
+        <div class="graph-node node-genre"><span>GENRE</span><strong>◈</strong></div>
+        <div class="graph-node node-source"><span>SOURCE</span><strong>◎</strong></div>
+      </div>
+    </section>
+
+    <section class="wrap overview" aria-label="Data overview">
+      <div class="overview-top"><span class="section-kicker">GRAPH OVERVIEW</span></div>
+      <div class="stats-grid">
+        <article class="stat-card"><span class="stat-label">MOVIES</span><strong id="statMovies">{{ stats.movies }}</strong></article>
+        <article class="stat-card"><span class="stat-label">ACTORS</span><strong id="statActors">{{ stats.actors }}</strong></article>
+        <article class="stat-card"><span class="stat-label">DIRECTORS</span><strong id="statDirectors">{{ stats.directors }}</strong></article>
+        <article class="stat-card"><span class="stat-label">GENRES</span><strong id="statGenres">{{ stats.genres }}</strong></article>
+      </div>
+    </section>
+
+    <section class="wrap source-section" aria-labelledby="sourcesHeading">
+      <div class="section-heading"><h2 id="sourcesHeading">Data sources</h2></div>
+      <div class="source-grid">
+        <article class="source-card">
+          <h3>IMDb datasets</h3>
+          <ul class="source-details">
+            <li><strong>IMDb ID:</strong> the identifier used to match movie records.</li>
+            <li><strong>Release year:</strong> the year the movie was released.</li>
+            <li><strong>Runtime:</strong> movie length in minutes.</li>
+            <li><strong>Genres:</strong> the categories assigned to each movie.</li>
+            <li><strong>Rating and votes:</strong> community ratings from IMDb.</li>
+          </ul>
+        </article>
+        <article class="source-card">
+          <h3>Kaggle · The Movies Dataset</h3>
+          <ul class="source-details">
+            <li><strong>Revenue:</strong> the money earned by a movie.</li>
+            <li><strong>Budget:</strong> the movie's production cost.</li>
+            <li><strong>Cast:</strong> performers in the movie.</li>
+            <li><strong>Director:</strong> the person who directed the movie.</li>
+          </ul>
+        </article>
+        <article class="source-card">
+          <h3>OMDb API</h3>
+          <ul class="source-details">
+            <li><strong>Plot:</strong> a short summary of the movie.</li>
+            <li><strong>Poster:</strong> a link to the movie poster.</li>
+            <li><strong>Ratings:</strong> IMDb, Rotten Tomatoes, and Metacritic when available.</li>
+            <li><strong>Awards:</strong> awards and nominations information.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="catalog-section" id="catalog">
+      <div class="wrap">
+        <div class="section-heading catalog-heading"><h2>Find movies</h2></div>
+        <div id="movieSearchPane">
+        <form id="movieFilterForm" class="movie-filter-form">
+          <div class="search-box"><span class="search-icon" aria-hidden="true">⌕</span><input id="search" name="q" type="search" aria-label="Search movie titles" list="movieSuggestions" autocomplete="off"></div>
+          <div class="filter-grid">
+            <label class="filter-field">Genre
+              <select id="filterGenre" name="genre"><option value="">All genres</option></select>
+            </label>
+            <label class="filter-field">From year
+              <input name="year_from" type="number" min="0" max="9999" inputmode="numeric">
+            </label>
+            <label class="filter-field">To year
+              <input name="year_to" type="number" min="0" max="9999" inputmode="numeric">
+            </label>
+            <label class="filter-field">Minimum IMDb rating
+              <input name="min_rating" type="number" min="0" max="10" step="0.1">
+            </label>
+            <label class="filter-field">Director
+              <input name="director" type="search" list="directorSuggestions" autocomplete="off">
+            </label>
+            <label class="filter-field">Actor
+              <input name="actor" type="search" list="actorSuggestions" autocomplete="off">
+            </label>
+            <label class="filter-field">Sort by
+              <select name="sort">
+                <option value="rating_desc">Highest IMDb rating</option>
+                <option value="votes_desc">Most votes</option>
+                <option value="year_desc">Newest year</option>
+                <option value="year_asc">Oldest year</option>
+                <option value="revenue_desc">Highest revenue</option>
+                <option value="title">Title A–Z</option>
+              </select>
+            </label>
+            <div class="filter-actions"><button type="reset">Clear filters</button></div>
+          </div>
+          <datalist id="movieSuggestions"></datalist>
+          <datalist id="directorSuggestions"></datalist>
+          <datalist id="actorSuggestions"></datalist>
+        </form>
+        <p id="resultsInfo" class="results-info" hidden aria-live="polite"></p>
+        <div class="movie-grid" id="movies" hidden></div>
+        <section class="recommendations" id="recommendations" hidden aria-live="polite">
+          <h3 id="recommendationHeading"></h3>
+          <div class="movie-grid" id="recommendationMovies"></div>
+          <nav id="recommendationPagination" class="recommendation-pagination" aria-label="Related movie pages" hidden></nav>
+        </section>
+        </div>
+        <section id="peopleSearchPane" class="people-search-section">
+          <div class="people-section-heading"><h3>Find actors and directors</h3></div>
+          <form id="peopleFilterForm" class="people-filter-form">
+            <label class="person-filter-field">Name or description
+              <input name="q" type="search" autocomplete="off">
+            </label>
+            <label class="person-filter-field">Role
+              <select name="role">
+                <option value="all">All roles</option>
+                <option value="actor">Actor</option>
+                <option value="director">Director</option>
+              </select>
+            </label>
+            <label class="person-filter-field">Sort by
+              <select name="sort">
+                <option value="movies">Most movie credits</option>
+                <option value="name">Name A–Z</option>
+              </select>
+            </label>
+            <label class="person-filter-field">Minimum movie credits
+              <input name="min_movies" type="number" min="1" step="1" placeholder="e.g. 3">
+            </label>
+            <label class="person-filter-field">Born from
+              <input name="birth_from" type="number" min="1000" max="9999" step="1" placeholder="e.g. 1970">
+            </label>
+            <label class="person-filter-field">Born through
+              <input name="birth_to" type="number" min="1000" max="9999" step="1" placeholder="e.g. 2000">
+            </label>
+            <button class="people-reset" type="reset">Clear filters</button>
+          </form>
+          <p id="peopleResultsInfo" class="results-info" hidden aria-live="polite"></p>
+          <div id="peopleResults" class="person-grid" hidden></div>
+          <nav id="peoplePagination" class="recommendation-pagination" aria-label="People result pages" hidden></nav>
+        </section>
+      </div>
+    </section>
+
+    <section class="wrap explore-tools">
+      <article class="tool-panel graph-query-panel" id="ask">
+        <div class="tool-heading"><span class="tool-icon">⌘</span><div><span class="section-kicker">SPARQL EXPLORER</span><h2>Explore movie data</h2></div></div>
+        <form id="graphExploreForm" class="graph-explore-form">
+            <select id="graphTemplate" name="template" aria-label="Question template">
+              <option value="related_movies">Which movies are related to this movie?</option>
+              <option value="movie_people">Who worked on this movie?</option>
+              <option value="coactors_by_actor">Which actors most often co-star with this actor?</option>
+              <option value="actors_by_director">Which actors collaborate most with this director?</option>
+              <option value="actor_genre_profile">Which genres does this actor appear in most?</option>
+              <option value="genres_by_min_movies">Which genres have the highest average IMDb ratings?</option>
+              <option value="movies_by_min_cast">Which movies have the largest casts?</option>
+            </select>
+          <label class="graph-field" id="graphValueLabel" for="graphValue">Movie title</label>
+          <input id="graphValue" name="value" type="search" list="graphSuggestions" autocomplete="off" placeholder="e.g. Inception">
+          <datalist id="graphSuggestions"></datalist>
+          <button id="graphRunButton" class="graph-run-button" type="submit">Run SPARQL <span>→</span></button>
+        </form>
+      </article>
+      <article class="tool-panel graph-result-panel">
+        <div class="tool-heading"><span class="tool-icon graph-result-icon">⌘</span><div><span class="section-kicker">SPARQL RESULTS</span><h2>Query results</h2></div></div>
+        <p id="graphResultInfo" class="query-result-info" aria-live="polite"></p>
+        <div id="graphQueryResults" class="query-results-wrap" aria-live="polite"></div>
+        <details id="exploreSparqlDetails" class="sparql-details">
+          <summary>View generated SPARQL</summary>
+          <pre id="exploreSparql" class="sparql-code">The query will appear after you run it.</pre>
+        </details>
+      </article>
+    </section>
+
+    <section class="wrap neighborhood-section" id="neighborhood">
+      <div class="section-heading neighborhood-heading">
+        <div><span class="section-kicker">NEIGHBORHOOD EXPLORER</span><h2>Explore a two-hop neighborhood</h2></div>
+        </div>
+      <form id="neighborhoodForm" class="neighborhood-form">
+        <label class="neighborhood-field">Entity type
+          <select id="neighborhoodType" name="type">
+            <option value="movie">Movie</option>
+            <option value="actor">Actor</option>
+            <option value="director">Director</option>
+            <option value="genre">Genre</option>
+          </select>
+        </label>
+        <label class="neighborhood-field neighborhood-name-field" for="neighborhoodValue">Entity name
+          <input id="neighborhoodValue" name="value" type="search" list="neighborhoodSuggestions" autocomplete="off" placeholder="e.g. Inception">
+          <datalist id="neighborhoodSuggestions"></datalist>
+        </label>
+        <button id="neighborhoodRunButton" class="neighborhood-run-button" type="submit">Show graph <span>→</span></button>
+      </form>
+      <p id="neighborhoodInfo" class="neighborhood-info" aria-live="polite"></p>
+      <div class="neighborhood-legend" aria-label="Entity type legend">
+        <span data-kind="movie">Movie</span><span data-kind="actor">Actor</span><span data-kind="director">Director</span><span data-kind="genre">Genre</span>
+      </div>
+      <div class="neighborhood-map-wrap">
+        <svg id="neighborhoodSvg" class="neighborhood-map" viewBox="0 0 1400 1000" role="img" aria-label="Entity neighborhood graph"></svg>
+        <div id="neighborhoodTooltip" class="neighborhood-tooltip" role="status" hidden></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap footer"><a class="brand" href="/"><span class="brand-mark">C</span><span>CineGraph</span></a></footer>
+  <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>

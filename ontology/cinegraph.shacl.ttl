@@ -1,0 +1,84 @@
+@prefix cine: <https://example.org/cinegraph/ontology#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+cine:MovieShape a sh:NodeShape ;
+    sh:targetClass cine:Movie ;
+    sh:property [
+        sh:path cine:title ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:Literal ;
+        sh:message "Every movie must have exactly one literal title."@en
+    ] ;
+    sh:property [
+        sh:path cine:imdbID ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:pattern "^tt[0-9]+$" ;
+        sh:message "IMDb identifiers must use the tt followed by digits format."@en
+    ] ;
+    sh:property [
+        sh:path cine:releaseYear ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:gYear ;
+        sh:message "Release year must be an xsd:gYear."@en
+    ] ;
+    sh:property [
+        sh:path cine:imdbRating ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0 ;
+        sh:maxInclusive 10 ;
+        sh:message "IMDb rating must be a decimal from 0 to 10."@en
+    ] ;
+    sh:property [
+        sh:path cine:ratingVotes ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:message "Rating vote count must be a non-negative integer."@en
+    ] ;
+    sh:property [
+        sh:path cine:durationMinutes ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:decimal ;
+        sh:minInclusive 0 ;
+        sh:message "Runtime must be a non-negative decimal number of minutes."@en
+    ] ;
+    sh:property [
+        sh:path cine:hasGenre ;
+        sh:nodeKind sh:IRI ;
+        sh:class cine:Genre ;
+        sh:message "Movie genres must point to Genre resources."@en
+    ] ;
+    sh:property [
+        sh:path cine:hasActor ;
+        sh:nodeKind sh:IRI ;
+        sh:class cine:Actor ;
+        sh:message "Movie actors must point to Actor resources."@en
+    ] ;
+    sh:property [
+        sh:path cine:directedBy ;
+        sh:nodeKind sh:IRI ;
+        sh:class cine:Director ;
+        sh:message "Movie directors must point to Director resources."@en
+    ] .
+
+cine:PersonShape a sh:NodeShape ;
+    sh:targetClass cine:Person ;
+    sh:property [
+        sh:path <http://www.w3.org/2000/01/rdf-schema#label> ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:Literal ;
+        sh:message "Every person must have a readable label."@en
+    ] .
+
+cine:GenreShape a sh:NodeShape ;
+    sh:targetClass cine:Genre ;
+    sh:property [
+        sh:path <http://www.w3.org/2000/01/rdf-schema#label> ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:Literal ;
+        sh:message "Every genre must have a readable label."@en
+    ] .

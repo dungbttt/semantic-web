@@ -1,0 +1,11 @@
+PREFIX cine: <https://example.org/cinegraph/ontology#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?movieTitle ?relation ?entityName ?externalURI WHERE {
+  ?movie a cine:Movie ; cine:title ?movieTitle ; ?relation ?entity .
+  VALUES ?relation { cine:hasActor cine:directedBy cine:hasGenre }
+  ?entity rdfs:label ?entityName ; owl:sameAs ?externalURI .
+}
+ORDER BY ?movieTitle ?relation ?entityName
+LIMIT 100

@@ -1,0 +1,9 @@
+PREFIX cine: <https://example.org/cinegraph/ontology#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?title ?genre WHERE {
+  ?movie a cine:Movie ; cine:title ?title ; cine:hasGenre ?genreNode .
+  ?genreNode rdfs:label ?genre .
+  FILTER(LCASE(STR(?genre)) IN ("sci-fi", "science fiction"))
+}
+ORDER BY ?title
